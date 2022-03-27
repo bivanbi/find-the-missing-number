@@ -1,0 +1,22 @@
+{
+  "name": "kign.org/find-the-missing-number",
+  "description": "Find the missing number. Create as many different solutions and rank them by efficiency (measure time required)",
+  "type": "project",
+  "license": "GPL-3.0-or-later",
+  "require": {
+    "php": "^7.4 || ^8.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.5 || ^9.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "KignOrg\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "KignOrg\\": "tests/"
+    }
+  }
+}
