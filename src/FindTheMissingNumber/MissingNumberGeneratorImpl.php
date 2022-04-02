@@ -14,13 +14,8 @@ class MissingNumberGeneratorImpl implements MissingNumberGenerator
 
     public function generateInAscendingOrder(int $maximum, int $missing = null): array
     {
-        $missing = $missing ?? rand(1, $maximum);
-        $result = [];
-        for ($i = 1; $i <= $maximum; $i++) {
-            if ($i !== $missing) {
-                $result[] = $i;
-            }
-        }
-        return $result;
+        $array = range(1, $maximum);
+        array_splice($array, $missing - 1, 1);
+        return $array;
     }
 }

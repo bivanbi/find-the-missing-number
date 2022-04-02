@@ -6,11 +6,11 @@ use PHPUnit\Framework\TestCase;
 
 class MissingNumberGeneratorTest extends TestCase
 {
-    private array $maximums = [1023, 2048, 4095, 8192, 16383, 32768, 64535];
+    private array $maximums = [1023, 2048, 4095, 2**13, 2**16];
     private MissingNumberGenerator $generator;
     private StopWatch $stopWatch;
 
-    private string $execTimeFormatString = "%s: Generating %d numbers took %f microseconds (%d nanoseconds)\n";
+    private string $execTimeFormatString = "[%' 7.3f ms] %' 35s (max: %' 7d, CPU efficiency: %' 3.3f numbers / us)\n";
 
     protected function setUp(): void
     {
@@ -24,7 +24,7 @@ class MissingNumberGeneratorTest extends TestCase
             $expectedMissing = rand(1, $maximum);
             $this->stopWatch->reset();
             $actualNumbers = $this->generator->generateInAscendingOrder($maximum, $expectedMissing);
-            $this->printExecutionTime(__FUNCTION__, $maximum, $this->stopWatch->getElapsedTimeNanoseconds());
+            $this->printExecutionTime(__FUNCTION__, $maximum, $this->stopWatch->getElapsedTimeMilliSecondsFloat());
             $this->assertAllNumberButMissingPresent($maximum, $expectedMissing, $actualNumbers);
             self::assertTrue($this->isInAscendingOrder($actualNumbers), "Expect that numbers are in ascending order");
         }
@@ -36,15 +36,15 @@ class MissingNumberGeneratorTest extends TestCase
             $expectedMissing = rand(1, $maximum);
             $this->stopWatch->reset();
             $actualNumbers = $this->generator->generateInRandomOrder($maximum, $expectedMissing);
-            $this->printExecutionTime(__FUNCTION__, $maximum, $this->stopWatch->getElapsedTimeNanoseconds());
+            $this->printExecutionTime(__FUNCTION__, $maximum, $this->stopWatch->getElapsedTimeMilliSecondsFloat());
             $this->assertAllNumberButMissingPresent($maximum, $expectedMissing, $actualNumbers);
             self::assertFalse($this->isInAscendingOrder($actualNumbers), 'Expect that numbers are NOT in ascending order');
         }
     }
 
-    private function printExecutionTime(string $caller, int $maximum, int $elapsedTime): void
+    private function printExecutionTime(string $caller, int $maximum, float $elapsedTime): void
     {
-        printf($this->execTimeFormatString, $caller, $maximum, floatval($elapsedTime / 1000000), $elapsedTime);
+        printf($this->execTimeFormatString, $elapsedTime, $caller, $maximum, ($maximum / $elapsedTime / 1000));
     }
 
     private function assertAllNumberButMissingPresent(int $expectedMaximum, int $expectedMissing, array $actualNumbers): void
